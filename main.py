@@ -27,7 +27,7 @@ class Game:
 totalGames = 0
 gamesWon = 0
 
-for x in range(1000):
+for x in range(100):
 
     gameInfo = Game()
 
@@ -95,18 +95,6 @@ print("totalGames:", totalGames)
 print("gamesWon:", gamesWon)
 print("SANDRA:", gamesWon/totalGames)
 
-# print("First turn:")
-# print(gameInfo.firstTurn)
-# print("Second turn:")
-# print(gameInfo.secondTurn)
-# print("Third turn:")
-# print(gameInfo.thirdTurn)
-# print("Fourth turn:")
-# print(gameInfo.fourthTurn)
-# print("Fifth turn:")
-# print(gameInfo.fifthTurn)
-# print("Sixth turn:")
-# print(gameInfo.sixthTurn)
 
 # TODO: If there is only one enemy that can be left, scan it and immediately attack it.
 # TODO: Horn wins at the exact same moment of the attack.

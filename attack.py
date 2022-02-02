@@ -6,17 +6,17 @@ def printEnemyTypeAndHealth(gameInfo, enemyArrayPosition):
 
     enemy = gameInfo.enemySlots[enemyArrayPosition]
 
-    if enemy == "Dead":
-        print("Enemy health (Dead): " + str(0))
+    # if enemy == "Dead":
+    #? print("Enemy health (Dead): " + str(0))
 
-    else:
-        print(
-            "Enemy Type: "
-            + enemy["type"]
-            + " | "
-            + "Enemy health: "
-            + str(enemy["health"])
-        )
+    # else:
+    #? print(
+    #         "Enemy Type: "
+    #         + enemy["type"]
+    #         + " | "
+    #         + "Enemy health: "
+    #         + str(enemy["health"])
+    #     )
 
 
 # * Horn goes backwards until it is in a position to attack with the crane, then keeps attacking until the enemy falls.
@@ -25,7 +25,7 @@ def craneAttack(
     enemyToAttackArrayPosition,
 ):
 
-    print("Starting attack - Crane.")
+    #? print("Starting attack - Crane.")
 
     currentEnemy = gameInfo.enemySlots[enemyToAttackArrayPosition]
     gameInfo.hornEnergy = gameInfo.hornEnergy - 300
@@ -35,15 +35,15 @@ def craneAttack(
         gameInfo.enemySlots[enemyToAttackArrayPosition] = "Dead"
 
     printEnemyTypeAndHealth(gameInfo, enemyToAttackArrayPosition)
-    print("Crane attack used. New energy: " + str(gameInfo.hornEnergy))
-    print()
+    #? print("Crane attack used. New energy: " + str(gameInfo.hornEnergy))
+    #? print()
     return
 
 
 # * Horn headbutts the bottle and goes backwards
 def headbutt(gameInfo, enemyToAttackArrayPosition):
 
-    print("Starting attack - Headbutt.")
+    #?  print("Starting attack - Headbutt.")
 
     enemyToAttack = gameInfo.enemySlots[enemyToAttackArrayPosition]
 
@@ -55,15 +55,15 @@ def headbutt(gameInfo, enemyToAttackArrayPosition):
 
     printEnemyTypeAndHealth(gameInfo, enemyToAttackArrayPosition)
 
-    print("Headbutt attack used. New energy: " + str(gameInfo.hornEnergy))
-    print()
+    #? print("Headbutt attack used. New energy: " + str(gameInfo.hornEnergy))
+    #? print()
     return
 
 
 # * Horn plays a sound effect
 def soundAttack(gameInfo, enemyToAttackArrayPosition):
 
-    print("Starting attack - Sound.")
+    #? print("Starting attack - Sound.")
 
     enemyToAttack = gameInfo.enemySlots[enemyToAttackArrayPosition]
 
@@ -74,5 +74,5 @@ def soundAttack(gameInfo, enemyToAttackArrayPosition):
         gameInfo.enemySlots[enemyToAttackArrayPosition] = "Dead"
 
     printEnemyTypeAndHealth(gameInfo, enemyToAttackArrayPosition)
-    print("Sound attack used. New energy: " + str(gameInfo.hornEnergy))
-    print()
+    #? print("Sound attack used. New energy: " + str(gameInfo.hornEnergy))
+    #? print()

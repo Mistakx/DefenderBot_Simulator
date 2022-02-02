@@ -26,7 +26,7 @@ def gameIsStillOn(gameInfo):
 
     if gameInfo.currentTurn <= 6:
 
-        print("Current turn: " + str(gameInfo.currentTurn))
+        #? print("Current turn: " + str(gameInfo.currentTurn))
 
         i = 0
 
@@ -37,29 +37,26 @@ def gameIsStillOn(gameInfo):
             if (currentEnemy == "") or (
                 currentEnemy == "No bottle"
             ):  # Slot still hasn't had enemy, so the game is still on
-                print("Continue1")
                 return True
 
             elif enemyIsAttackingNextTurn(gameInfo, i):
-                print("Continue2")
                 return True
 
             i += 1
     
-    print(gameInfo.enemySlots)
-    # print("Continue3")
+    #? print(gameInfo.enemySlots)
     return False
 
 # * Horn regains 50% of it's current energy, never exceeding 500
 def regainEnergy(gameInfo):
 
-    print("Regaining energy.")
+    #? print("Regaining energy.")
 
     gameInfo.hornEnergy = gameInfo.hornEnergy + 0.5 * gameInfo.hornEnergy
     if gameInfo.hornEnergy > 500:
         gameInfo.hornEnergy = 500
 
-    print("Horn Energy:", gameInfo.hornEnergy)
+    #? print("Horn Energy:", gameInfo.hornEnergy)
 
 # * Horn attacks the enemies according to the defined heuristics
 def attackEnemies(gameInfo):
@@ -68,17 +65,17 @@ def attackEnemies(gameInfo):
     def regainEnergyIfNecessary(gameInfo):
 
         if gameInfo.hornEnergy == 500:
-            print("Horn has maximum energy, doesn't need to regain it.\n")
+            #? print("Horn has maximum energy, doesn't need to regain it.\n")
             return False
 
         elif (gameInfo.hornEnergy < 500) and (gameInfo.usingRemainingEnergy == True):
-            print("Horn is is using it's remaining energy to attack.\n")
+            #? print("Horn is is using it's remaining energy to attack.\n")
             return False
 
         elif (gameInfo.hornEnergy < 500) and (
             gameInfo.usingRemainingEnergy == False
         ):
-            print("Horn is skipping it's turn to regain energy.\n")
+            #? print("Horn is skipping it's turn to regain energy.\n")
             return True
 
     # If 4 enemies were killed or are out of attacks, crane attack the enemy on the board with more health
@@ -123,8 +120,8 @@ def attackEnemies(gameInfo):
 
             gameInfo.usingRemainingEnergy = True
 
-            print("There are 4 dead or out of attack enemies. Using remaining energy.")
-            print("Checking if a crane attack is viable.")
+            #? print("There are 4 dead or out of attack enemies. Using remaining energy.")
+            #? print("Checking if a crane attack is viable.")
 
             # Counts the number of enemies alive that have 50 health
             numberOfEnemiesAttackingNextTurnWith50Health = 0
@@ -140,9 +137,9 @@ def attackEnemies(gameInfo):
             #! If two enemies are attacking next turn and both have 50 life, Horn doesn't use the crane attack
             #! Using the crane attack in this situation would leave one of the enemies alive
             if numberOfEnemiesAttackingNextTurnWith50Health == 2:
-                print(
-                    "There are 2 remaining enemies alive, but both have 50 health. Not using crane attack."
-                )
+                #? print(
+                #     "There are 2 remaining enemies alive, but both have 50 health. Not using crane attack."
+                # )
                 return
 
             i = 0
@@ -163,11 +160,11 @@ def attackEnemies(gameInfo):
 
                 i += 1
 
-            print(
-                "Crane attacking remaining slot "
-                + str(tempEnemyArrayPosition + 1)
-                + ".\n"
-            )
+            #? print(
+            #     "Crane attacking remaining slot "
+            #     + str(tempEnemyArrayPosition + 1)
+            #     + ".\n"
+            # )
 
             attack.craneAttack(
                 gameInfo,
@@ -209,7 +206,7 @@ def attackEnemies(gameInfo):
         # Attacking with full energy
         if (numberOfArtilleriesReady >= 1) and (gameInfo.hornEnergy == 500):
 
-            print("There are artilleries to attack. Attacking with full energy")
+            #? print("There are artilleries to attack. Attacking with full energy")
 
             # Horn can do up to 3 sound attacks per turn and still regain full energy.
             # The artilleries need to be prioritized, and always sound attacked attacked, regardless of energy.
@@ -236,7 +233,7 @@ def attackEnemies(gameInfo):
                 ):
                     # slotsToSoundAttack[numberOfNonArtilleriesAddedToArray] = i + 1
                     slotsToSoundAttack.append(i + 1)
-                    print("Non Artillery queued to be attacked. Slot: " + str(i + 1))
+                    #? print("Non Artillery queued to be attacked. Slot: " + str(i + 1))
                     numberOfNonArtilleriesAddedToArray += 1
 
                 i += 1
@@ -253,12 +250,12 @@ def attackEnemies(gameInfo):
                 ):
                     # slotsToSoundAttack[currentArrayIndex] = i + 1
                     slotsToSoundAttack.append(i + 1)
-                    print("Artillery queued to be attacked. Slot: " + str(i + 1))
+                    #? print("Artillery queued to be attacked. Slot: " + str(i + 1))
                     currentArrayIndex += 1
 
                 i += 1
 
-            print()  # Space after the last artillery queued print
+            #? print()  # Space after the last artillery queued print
 
             #! Sort the array that contains the slots to attack, so they are attacked in the correct order
             slotsToSoundAttack.sort()
@@ -275,8 +272,7 @@ def attackEnemies(gameInfo):
             and (gameInfo.usingRemainingEnergy)
         ):
 
-            print("There are artilleries to attack. Attacking with remaining energy.")
-            print(gameInfo.enemySlots)
+            #? print("There are artilleries to attack. Attacking with remaining energy.")
 
             # Horn can do up to 3 sound attacks per turn and still regain full energy.
             # The artilleries need to be prioritized, and always sound attacked attacked, regardless of energy.
@@ -298,16 +294,13 @@ def attackEnemies(gameInfo):
                 numberOfNonArtilleriesAddedToArray < numberOfAttacksToNonArtilleries
             ) and (numberOfNonArtilleriesAddedToArray < numberOfNonArtilleriesReady):
 
-                print("numberOfNonArtilleriesAddedToArray: ", numberOfNonArtilleriesAddedToArray)
-                print("numberOfNonArtilleriesReady: ", numberOfNonArtilleriesReady)
-                print(i)
                 currentEnemy = gameInfo.enemySlots[i]
                 if enemyIsAttackingNextTurn(gameInfo, i) and (
                     currentEnemy["type"] != "Artillery"
                 ):
                     # slotsToSoundAttack[numberOfNonArtilleriesAddedToArray] = i + 1
                     slotsToSoundAttack.append(i + 1)
-                    print("Non Artillery queued to be attacked. Slot: " + str(i + 1))
+                    #? print("Non Artillery queued to be attacked. Slot: " + str(i + 1))
                     numberOfNonArtilleriesAddedToArray += 1
 
                 i += 1
@@ -324,12 +317,12 @@ def attackEnemies(gameInfo):
                 ):
                     # slotsToSoundAttack[currentArrayIndex] = i + 1
                     slotsToSoundAttack.append(i + 1)
-                    print("Artillery queued to be attacked. Slot: " + str(i + 1))
+                    #? print("Artillery queued to be attacked. Slot: " + str(i + 1))
                     currentArrayIndex += 1
 
                 i += 1
 
-            print()  # Space after the last artillery queued print
+            #? print()  # Space after the last artillery queued print
 
             #! Sort the array that contains the slots to attack, so they are attacked in the correct order
             slotsToSoundAttack.sort()
@@ -355,7 +348,7 @@ def attackEnemies(gameInfo):
         # Attack with full energy
         if (numberOfEnemies >= 2) and (gameInfo.hornEnergy == 500):
 
-            print("There are 2 or more enemies to attack. Attacking with full energy.")
+            #? print("There are 2 or more enemies to attack. Attacking with full energy.")
 
 
             i = 0
@@ -380,9 +373,9 @@ def attackEnemies(gameInfo):
             and (gameInfo.usingRemainingEnergy)
         ):
 
-            print(
-                "There are 2 or more enemies to attack. Attacking with remaining energy."
-            )
+            #? print(
+            #     "There are 2 or more enemies to attack. Attacking with remaining energy."
+            # )
 
 
             i = 0
@@ -416,7 +409,7 @@ def attackEnemies(gameInfo):
         # * Attack with full energy
         if (numberOfEnemies == 1) and (gameInfo.hornEnergy == 500):
 
-            print("There is only 1 enemy. Attacking with full energy.")
+            #? print("There is only 1 enemy. Attacking with full energy.")
 
             # Attack one enemy with 100 or more health
             i = 0
@@ -427,8 +420,8 @@ def attackEnemies(gameInfo):
                 if enemyIsAttackingNextTurn(gameInfo, i) and (
                     currentEnemy["health"] >= 100
                 ):
-                    print("The enemy has 100 or more health.")
-                    print("Headbutting slot " + str(i + 1) + ".")
+                    #? print("The enemy has 100 or more health.")
+                    #? print("Headbutting slot " + str(i + 1) + ".")
 
                     attack.headbutt(
                         gameInfo,
@@ -451,8 +444,8 @@ def attackEnemies(gameInfo):
                     currentEnemy["health"] == 50
                 ):
 
-                    print("The enemy has 50 health.")
-                    print("Sound attacking slot " + str(i + 1) + ".\n")
+                    #? print("The enemy has 50 health.")
+                    #? print("Sound attacking slot " + str(i + 1) + ".\n")
 
                     attack.soundAttack(gameInfo, i)
                     gameInfo.alreadyAttackedThisTurn = True
@@ -477,8 +470,8 @@ def attackEnemies(gameInfo):
                     and (currentEnemy["health"] >= 100)
                     and (gameInfo.hornEnergy >= 150)
                 ):
-                    print("The enemy has 100 or more health.")
-                    print("Headbutting slot " + str(i + 1) + ".")
+                    #? print("The enemy has 100 or more health.")
+                    #? print("Headbutting slot " + str(i + 1) + ".")
 
                     attack.headbutt(
                         gameInfo,
@@ -502,8 +495,8 @@ def attackEnemies(gameInfo):
                     and (gameInfo.hornEnergy >= 50)
                 ):
 
-                    print("The enemy has 50 health.")
-                    print("Sound attacking slot " + str(i + 1) + ".\n")
+                    #? print("The enemy has 50 health.")
+                    #? print("Sound attacking slot " + str(i + 1) + ".\n")
                     attack.soundAttack(gameInfo, i)
                     gameInfo.alreadyAttackedThisTurn = True
      
@@ -569,7 +562,7 @@ def enemiesAttack(gameInfo):
                         gameInfo.hornHealth - currentEnemy["health"]
                     )
                     currentEnemy["n_attacks"] = currentEnemy["n_attacks"] - 1
-                    print("Horn was attacked by infantry.\n")
+                    #? print("Horn was attacked by infantry.\n")
 
                 # Tank gives as much damage as its health
                 if currentEnemy["type"] == "Tank":
@@ -577,18 +570,18 @@ def enemiesAttack(gameInfo):
                         gameInfo.hornHealth - currentEnemy["health"]
                     )
                     currentEnemy["n_attacks"] = currentEnemy["n_attacks"] - 1
-                    print("Horn was attacked by tank.\n")
+                    #? print("Horn was attacked by tank.\n")
 
                 # If artillery attacks, it always gives 500 damage
                 elif currentEnemy["type"] == "Artillery":
                     gameInfo.hornHealth = gameInfo.hornHealth - 500
                     currentEnemy["n_attacks"] = currentEnemy["n_attacks"] - 1
-                    print("Horn was attacked by artillery.\n")
+                    #? print("Horn was attacked by artillery.\n")
 
 
 
-                print("Horn Health:", gameInfo.hornHealth)
-                print()
+                #? print("Horn Health:", gameInfo.hornHealth)
+                # print()
 
                 if gameInfo.hornHealth <= 0:
                     return True
@@ -601,48 +594,40 @@ def playGame(gameInfo):
     while gameIsStillOn(gameInfo):
 
         if gameInfo.currentTurn == 1:
-            print(gameInfo.firstTurn)
             for enemy in gameInfo.firstTurn:
                 gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
                 gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 2:
-            print(gameInfo.secondTurn)
             for enemy in gameInfo.secondTurn:
                 gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
                 gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 3:
-            print(gameInfo.thirdTurn)
             for enemy in gameInfo.thirdTurn:
                 gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
                 gameInfo.lastEnemySlotModified += 1
                 
         if gameInfo.currentTurn == 4:
-            print(gameInfo.fourthTurn)
             for enemy in gameInfo.fourthTurn:
-                print(gameInfo.enemySlots)
                 gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
                 gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 5:
-            print(gameInfo.fifthTurn)
             for enemy in gameInfo.fifthTurn:
                 gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
                 gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 6:
-            print(gameInfo.sixthTurn)
             for enemy in gameInfo.sixthTurn:
                 gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
                 gameInfo.lastEnemySlotModified += 1
 
-        print(gameInfo.enemySlots)
 
         #! Energy regain
         regainEnergy(gameInfo)
-        print("Horn Health:", gameInfo.hornHealth)
-        print()
+        #? print("Horn Health:", gameInfo.hornHealth)
+        #? print()
 
         #! Horn attacks
         # * Finds if there are enemies to attack
@@ -659,15 +644,12 @@ def playGame(gameInfo):
             i += 1
 
         if thereAreEnemiesToAttack:
-            print("There are enemies to attack.")
+            #? print("There are enemies to attack.")
             if attackEnemies(gameInfo):
                 return True
-        else:
-            print()
-            # print("There are no enemies to attack.\n")
+
 
         #! Horn gets attacked
-        print("DEBUG: HORN GETS ATTACKED")
         # * Checks if there are enemies that will attack or warn Horn
         thereAreEnemiesThatAttackHorn = False
         i = 0
@@ -686,11 +668,8 @@ def playGame(gameInfo):
             thereAreEnemiesThatAttackHorn
         ):  #! Horn goes to be warned or attacked
 
-            print(
-                "There are enemies that attack or warn Horn this turn. Going to the last one."
-            )
 
-            print("Enemies started attacking and warning.")
+            # print("Enemies started attacking and warning.")
             if enemiesAttack(gameInfo):
                 return False
 
