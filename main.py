@@ -2,7 +2,7 @@
 import random 
 import attack
 import game
-
+import time
 
 #! Initialization
 
@@ -10,7 +10,7 @@ class Game:
     currentTurn = 0
     hornHealth = 750
     hornEnergy = 500
-    enemySlots = []
+    enemySlots = ["","","","","",""]
     usingRemainingEnergy = False
     alreadyAttackedThisTurn = True
     firstTurn = []
@@ -19,11 +19,12 @@ class Game:
     fourthTurn = []
     fifthTurn = []
     sixthTurn = []
+    lastEnemySlotModified = 0
 
 totalGames = 0
 gamesWon = 0
 
-for x in range(1):
+for x in range(1000):
 
     gameInfo = Game()
 
@@ -76,29 +77,33 @@ for x in range(1):
             (gameInfo.fifthTurn).append(randomEnemies[x])
 
         if randomNumber == 6:
-            (gameInfo.thirdTurn).append(randomEnemies[x])
+            (gameInfo.sixthTurn).append(randomEnemies[x])
 
 
-    # print("First turn:")
-    # print(gameInfo.firstTurn)
-    # print("Second turn:")
-    # print(gameInfo.secondTurn)
-    # print("Third turn:")
-    # print(gameInfo.thirdTurn)
-    # print("Fourth turn:")
-    # print(gameInfo.fourthTurn)
-    # print("Fifth turn:")
-    # print(gameInfo.fifthTurn)
-    # print("Sixth turn:")
-    # print(gameInfo.sixthTurn)
+    # time.sleep(1)
 
     #! Play game
     if game.playGame(gameInfo):
         gamesWon += 1
-        totalGames += 1
+    totalGames += 1
+    
 
 print("totalGames:", totalGames)
 print("gamesWon:", gamesWon)
+print("SANDRA:", gamesWon/totalGames)
+
+# print("First turn:")
+# print(gameInfo.firstTurn)
+# print("Second turn:")
+# print(gameInfo.secondTurn)
+# print("Third turn:")
+# print(gameInfo.thirdTurn)
+# print("Fourth turn:")
+# print(gameInfo.fourthTurn)
+# print("Fifth turn:")
+# print(gameInfo.fifthTurn)
+# print("Sixth turn:")
+# print(gameInfo.sixthTurn)
 
 # TODO: If there is only one enemy that can be left, scan it and immediately attack it.
 # TODO: Horn wins at the exact same moment of the attack.

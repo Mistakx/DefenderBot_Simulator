@@ -47,7 +47,6 @@ def headbutt(gameInfo, enemyToAttackArrayPosition):
 
     enemyToAttack = gameInfo.enemySlots[enemyToAttackArrayPosition]
 
-    horn.robot.stop()
     gameInfo.hornEnergy = gameInfo.hornEnergy - 150
     enemyToAttack["health"] = enemyToAttack["health"] - 100
 

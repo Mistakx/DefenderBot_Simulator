@@ -22,13 +22,13 @@ def enemyIsAttackingNextTurn(gameInfo, enemyArrayPosition):
 # * Checks if the game isn't over
 def gameIsStillOn(gameInfo):
 
+    print(gameInfo.currentTurn)
     gameInfo.currentTurn += 1
+    print(gameInfo.currentTurn)
 
     if gameInfo.currentTurn <= 6:
 
         print("Current turn: " + str(gameInfo.currentTurn))
-
-        gameIsStillOn = False
 
         i = 0
 
@@ -39,15 +39,17 @@ def gameIsStillOn(gameInfo):
             if (currentEnemy == "") or (
                 currentEnemy == "No bottle"
             ):  # Slot still hasn't had enemy, so the game is still on
-                gameIsStillOn = True
+                print("Continue1")
+                return True
 
             elif enemyIsAttackingNextTurn(gameInfo, i):
-                gameIsStillOn = True
+                print("Continue2")
+                return True
 
             i += 1
-
-        return gameIsStillOn
-
+    
+    print(gameInfo.enemySlots)
+    # print("Continue3")
     return False
 
 # * Horn regains 50% of it's current energy, never exceeding 500
@@ -76,7 +78,7 @@ def attackEnemies(gameInfo):
             return False
 
         elif (gameInfo.hornEnergy < 500) and (
-            usingRemainingEnergy.usingRemainingEnergy == False
+            gameInfo.usingRemainingEnergy == False
         ):
             print("Horn is skipping it's turn to regain energy.\n")
             return True
@@ -176,7 +178,7 @@ def attackEnemies(gameInfo):
             gameInfo.alreadyAttackedThisTurn = True
 
     # If there are artilleries, sound attack them, and use the remaining energy to sound attack the remaining enemies
-    def attackArtilleriesAndRemaining(horn, calibration, gameInfo):
+    def attackArtilleriesAndRemaining(gameInfo):
 
         #! Counts the number of artilleries
         numberOfArtilleriesReady = 0
@@ -266,28 +268,8 @@ def attackEnemies(gameInfo):
             #! Sound attack the queued enemies
             for slotToAttack in slotsToSoundAttack:
 
-                movement.followMainLineUntilEnemyLine(
-                    False,
-                    horn,
-                    calibration,
-                    gameInfo,
-                    calibration.followingMovementSpeed * 2.0,
-                    slotToAttack,
-                )
-                # horn.ev3.speaker.beep()
-
-                movement.setItselfAndRotate(horn, calibration)
-
-                # * horn.Robot follows the enemy line until the bottle
-                movement.followEnemyLineUntilBottle(
-                    False, False, horn, calibration, calibration.followingMovementSpeed
-                )
-                attack.soundAttack(horn, gameInfo, slotToAttack - 1)
+                attack.soundAttack(gameInfo, slotToAttack - 1)
                 gameInfo.alreadyAttackedThisTurn = True
-                horn.ev3.speaker.beep()
-
-                movement.goBackwardsAndRotate(horn, calibration)
-                gameInfo.currentPosition = slotToAttack
 
         if (
             (numberOfArtilleriesReady >= 1)
@@ -306,6 +288,12 @@ def attackEnemies(gameInfo):
             numberOfNonArtilleriesAddedToArray = 0  # The number of non artilleries queued to be attacked the same turn as the artilleries
             slotsToSoundAttack = []
 
+            print("numberOfNonArtilleriesAddedToArray: ", numberOfNonArtilleriesAddedToArray)
+            print("numberOfNonArtilleriesReady: ", numberOfNonArtilleriesReady)
+            print(gameInfo.enemySlots)
+            #TODO: ESTAVA AQUI SEGURANCA DO CRLH
+            print()
+
             #! Add non artilleries to be attacked to the array
             i = 0
 
@@ -316,6 +304,7 @@ def attackEnemies(gameInfo):
             while (
                 numberOfNonArtilleriesAddedToArray < numberOfAttacksToNonArtilleries
             ) and (numberOfNonArtilleriesAddedToArray < numberOfNonArtilleriesReady):
+
                 currentEnemy = gameInfo.enemySlots[i]
                 if enemyIsAttackingNextTurn(gameInfo, i) and (
                     currentEnemy["type"] != "Artillery"
@@ -352,31 +341,11 @@ def attackEnemies(gameInfo):
             #! Sound attack the queued enemies
             for slotToAttack in slotsToSoundAttack:
 
-                movement.followMainLineUntilEnemyLine(
-                    False,
-                    horn,
-                    calibration,
-                    gameInfo,
-                    calibration.followingMovementSpeed * 2.0,
-                    slotToAttack,
-                )
-                # horn.ev3.speaker.beep()
-
-                movement.setItselfAndRotate(horn, calibration)
-
-                # * horn.Robot follows the enemy line until the bottle
-                movement.followEnemyLineUntilBottle(
-                    False, False, horn, calibration, calibration.followingMovementSpeed
-                )
-                attack.soundAttack(horn, gameInfo, slotToAttack - 1)
+                attack.soundAttack(gameInfo, slotToAttack - 1)
                 gameInfo.alreadyAttackedThisTurn = True
-                horn.ev3.speaker.beep()
-
-                movement.goBackwardsAndRotate(horn, calibration)
-                gameInfo.currentPosition = slotToAttack
 
     # If there are 2 or more enemies, sound attack them until energy reaches 350
-    def attackTwoOrMoreEnemies(horn, calibration, gameInfo):
+    def attackTwoOrMoreEnemies(gameInfo):
 
         #! Counts the number of enemies
         numberOfEnemies = 0
@@ -392,43 +361,21 @@ def attackEnemies(gameInfo):
 
             print("There are 2 or more enemies to attack. Attacking with full energy.")
 
-            while gameInfo.hornEnergy > 350:
 
-                i = 0
-                while i < 6:
+            i = 0
+            while i < 6:
+
+                if gameInfo.hornEnergy > 350:
+
 
                     currentEnemy = gameInfo.enemySlots[i]
 
                     if enemyIsAttackingNextTurn(gameInfo, i):
 
-                        movement.followMainLineUntilEnemyLine(
-                            False,
-                            horn,
-                            calibration,
-                            gameInfo,
-                            calibration.followingMovementSpeed * 2.0,
-                            i + 1,
-                        )
-                        # horn.ev3.speaker.beep()
-
-                        movement.setItselfAndRotate(horn, calibration)
-
-                        # * Horn follows the enemy line until the bottle
-                        movement.followEnemyLineUntilBottle(
-                            False,
-                            False,
-                            horn,
-                            calibration,
-                            calibration.followingMovementSpeed,
-                        )
-                        attack.soundAttack(horn, gameInfo, i)
+                        attack.soundAttack(gameInfo, i)
                         gameInfo.alreadyAttackedThisTurn = True
-                        horn.ev3.speaker.beep()
 
-                        movement.goBackwardsAndRotate(horn, calibration)
-                        gameInfo.currentPosition = i + 1
-
-                    i += 1
+                i += 1
 
         # Attack with remaining energy
         if (
@@ -441,46 +388,25 @@ def attackEnemies(gameInfo):
                 "There are 2 or more enemies to attack. Attacking with remaining energy."
             )
 
-            while gameInfo.hornEnergy > 0:
 
-                i = 0
-                while i < 6:
+            i = 0
+            while i < 6:
+
+                if gameInfo.hornEnergy > 0:
+
 
                     currentEnemy = gameInfo.enemySlots[i]
 
                     if enemyIsAttackingNextTurn(gameInfo, i):
 
-                        movement.followMainLineUntilEnemyLine(
-                            False,
-                            horn,
-                            calibration,
-                            gameInfo,
-                            calibration.followingMovementSpeed * 2.0,
-                            i + 1,
-                        )
-                        # horn.ev3.speaker.beep()
-
-                        movement.setItselfAndRotate(horn, calibration)
-
-                        # * Horn follows the enemy line until the bottle
-                        movement.followEnemyLineUntilBottle(
-                            False,
-                            False,
-                            horn,
-                            calibration,
-                            calibration.followingMovementSpeed,
-                        )
-                        attack.soundAttack(horn, gameInfo, i)
+                        attack.soundAttack(gameInfo, i)
                         gameInfo.alreadyAttackedThisTurn = True
-                        horn.ev3.speaker.beep()
 
-                        movement.goBackwardsAndRotate(horn, calibration)
-                        gameInfo.currentPosition = i + 1
 
                     i += 1
 
     # Attack an enemy if non of the other conditions apply
-    def attackOneEnemy(horn, calibration, gameInfo):
+    def attackOneEnemy(gameInfo):
 
         #! Counts the number of enemies
         numberOfEnemies = 0
@@ -508,39 +434,12 @@ def attackEnemies(gameInfo):
                     print("The enemy has 100 or more health.")
                     print("Headbutting slot " + str(i + 1) + ".")
 
-                    movement.followMainLineUntilEnemyLine(
-                        False,
-                        horn,
-                        calibration,
-                        gameInfo,
-                        calibration.followingMovementSpeed * 2.0,
-                        i + 1,
-                    )
-                    # horn.ev3.speaker.beep()
-
-                    movement.setItselfAndRotate(horn, calibration)
-
-                    # * horn.Robot follows the enemy line until the bottle
-                    movement.followEnemyLineUntilBottle(
-                        False,
-                        False,
-                        horn,
-                        calibration,
-                        calibration.followingMovementSpeed,
-                    )
                     attack.headbutt(
-                        False,
-                        horn,
-                        calibration,
                         gameInfo,
-                        i,
-                        calibration.followingMovementSpeed,
+                        i
                     )
                     gameInfo.alreadyAttackedThisTurn = True
-                    horn.ev3.speaker.beep()
 
-                    movement.goBackwardsAndRotate(horn, calibration)
-                    gameInfo.currentPosition = i + 1
 
                     return
 
@@ -559,32 +458,8 @@ def attackEnemies(gameInfo):
                     print("The enemy has 50 health.")
                     print("Sound attacking slot " + str(i + 1) + ".\n")
 
-                    movement.followMainLineUntilEnemyLine(
-                        False,
-                        horn,
-                        calibration,
-                        gameInfo,
-                        calibration.followingMovementSpeed * 2.0,
-                        i + 1,
-                    )
-                    # horn.ev3.speaker.beep()
-
-                    movement.setItselfAndRotate(horn, calibration)
-
-                    # * horn.Robot follows the enemy line until the bottle
-                    movement.followEnemyLineUntilBottle(
-                        False,
-                        False,
-                        horn,
-                        calibration,
-                        calibration.followingMovementSpeed,
-                    )
-                    attack.soundAttack(horn, gameInfo, i)
+                    attack.soundAttack(gameInfo, i)
                     gameInfo.alreadyAttackedThisTurn = True
-                    horn.ev3.speaker.beep()
-
-                    movement.goBackwardsAndRotate(horn, calibration)
-                    gameInfo.currentPosition = i + 1
 
                     return
 
@@ -609,39 +484,11 @@ def attackEnemies(gameInfo):
                     print("The enemy has 100 or more health.")
                     print("Headbutting slot " + str(i + 1) + ".")
 
-                    movement.followMainLineUntilEnemyLine(
-                        False,
-                        horn,
-                        calibration,
-                        gameInfo,
-                        calibration.followingMovementSpeed * 2.0,
-                        i + 1,
-                    )
-                    # horn.ev3.speaker.beep()
-
-                    movement.setItselfAndRotate(horn, calibration)
-
-                    # * horn.Robot follows the enemy line until the bottle
-                    movement.followEnemyLineUntilBottle(
-                        False,
-                        False,
-                        horn,
-                        calibration,
-                        calibration.followingMovementSpeed,
-                    )
                     attack.headbutt(
-                        False,
-                        horn,
-                        calibration,
                         gameInfo,
-                        i,
-                        calibration.followingMovementSpeed,
+                        i
                     )
                     gameInfo.alreadyAttackedThisTurn = True
-                    horn.ev3.speaker.beep()
-
-                    movement.goBackwardsAndRotate(horn, calibration)
-                    gameInfo.currentPosition = i + 1
 
                     return
 
@@ -661,34 +508,9 @@ def attackEnemies(gameInfo):
 
                     print("The enemy has 50 health.")
                     print("Sound attacking slot " + str(i + 1) + ".\n")
-
-                    movement.followMainLineUntilEnemyLine(
-                        False,
-                        horn,
-                        calibration,
-                        gameInfo,
-                        calibration.followingMovementSpeed * 2.0,
-                        i + 1,
-                    )
-                    # horn.ev3.speaker.beep()
-
-                    movement.setItselfAndRotate(horn, calibration)
-
-                    # * horn.Robot follows the enemy line until the bottle
-                    movement.followEnemyLineUntilBottle(
-                        False,
-                        False,
-                        horn,
-                        calibration,
-                        calibration.followingMovementSpeed,
-                    )
-                    attack.soundAttack(horn, gameInfo, i)
+                    attack.soundAttack(gameInfo, i)
                     gameInfo.alreadyAttackedThisTurn = True
-                    horn.ev3.speaker.beep()
-
-                    movement.goBackwardsAndRotate(horn, calibration)
-                    gameInfo.currentPosition = i + 1
-
+     
                     return
 
                 i += 1
@@ -698,13 +520,13 @@ def attackEnemies(gameInfo):
     gameInfo.alreadyAttackedThisTurn = False
 
     if gameInfo.alreadyAttackedThisTurn == False:
-        fourEnemiesKilled(horn, calibration, gameInfo)
+        fourEnemiesKilled(gameInfo)
     if gameInfo.alreadyAttackedThisTurn == False:
-        attackArtilleriesAndRemaining(horn, calibration, gameInfo)
+        attackArtilleriesAndRemaining(gameInfo)
     if gameInfo.alreadyAttackedThisTurn == False:
-        attackTwoOrMoreEnemies(horn, calibration, gameInfo)
+        attackTwoOrMoreEnemies(gameInfo)
     if gameInfo.alreadyAttackedThisTurn == False:
-        attackOneEnemy(horn, calibration, gameInfo)
+        attackOneEnemy(gameInfo)
 
     #! Counts the number of enemies dead or out of attacks
     numberOfDeadOrOutOfAttacksEnemies = 0
@@ -723,8 +545,7 @@ def attackEnemies(gameInfo):
         i += 1
 
     if numberOfDeadOrOutOfAttacksEnemies == 6:
-        while True:
-            horn.ev3.speaker.play_file(SoundFile.MAGIC_WAND)
+        return True
 
 def enemiesAttack(gameInfo):
 
@@ -774,7 +595,7 @@ def enemiesAttack(gameInfo):
                 print()
 
                 if gameInfo.hornHealth <= 0:
-                    return False
+                    return True
 
 
         i -= 1
@@ -783,29 +604,47 @@ def playGame(gameInfo):
 
     while gameIsStillOn(gameInfo):
 
+        print("DEBUG: Enemy slots before adding turn")
+        print(gameInfo.enemySlots)
+        print("DEBUG: Turn slots")
+
+
         if gameInfo.currentTurn == 1:
+            print(gameInfo.firstTurn)
             for enemy in gameInfo.firstTurn:
-                gameInfo.enemySlots.append(enemy)
+                gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
+                gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 2:
+            print(gameInfo.secondTurn)
             for enemy in gameInfo.secondTurn:
-                gameInfo.enemySlots.append(enemy)   
+                gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
+                gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 3:
+            print(gameInfo.thirdTurn)
             for enemy in gameInfo.thirdTurn:
-                gameInfo.enemySlots.append(enemy)        
+                gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
+                gameInfo.lastEnemySlotModified += 1
                 
         if gameInfo.currentTurn == 4:
+            print(gameInfo.fourthTurn)
             for enemy in gameInfo.fourthTurn:
-                gameInfo.enemySlots.append(enemy)       
+                print(gameInfo.enemySlots)
+                gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
+                gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 5:
+            print(gameInfo.fifthTurn)
             for enemy in gameInfo.fifthTurn:
-                gameInfo.enemySlots.append(enemy)
+                gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
+                gameInfo.lastEnemySlotModified += 1
 
         if gameInfo.currentTurn == 6:
+            print(gameInfo.sixthTurn)
             for enemy in gameInfo.sixthTurn:
-                gameInfo.enemySlots.append(enemy)
+                gameInfo.enemySlots[gameInfo.lastEnemySlotModified] = enemy
+                gameInfo.lastEnemySlotModified += 1
 
         print(gameInfo.enemySlots)
 
@@ -830,13 +669,14 @@ def playGame(gameInfo):
 
         if thereAreEnemiesToAttack:
             print("There are enemies to attack.")
-            attackEnemies(horn, calibration, gameInfo)
+            if attackEnemies(gameInfo):
+                return True
         else:
             print()
             # print("There are no enemies to attack.\n")
 
         #! Horn gets attacked
-
+        print("DEBUG: HORN GETS ATTACKED")
         # * Checks if there are enemies that will attack or warn Horn
         thereAreEnemiesThatAttackHorn = False
         i = 0
@@ -849,7 +689,7 @@ def playGame(gameInfo):
             ):  # Enemy is attacking horn next turn
                 thereAreEnemiesThatAttackHorn = True
 
-        i += 1
+            i += 1
 
         if (
             thereAreEnemiesThatAttackHorn
@@ -858,9 +698,9 @@ def playGame(gameInfo):
             print(
                 "There are enemies that attack or warn Horn this turn. Going to the last one."
             )
-            goToLastEnemyAliveNotWarned(horn, calibration, gameInfo)
-            movement.walksForwardsAndRotatesToPointBackward(horn, calibration)
+
             print("Enemies started attacking and warning.")
-            enemiesAttackAndWarn(horn, calibration, gameInfo)
+            if enemiesAttack(gameInfo):
+                return False
 
     return True
