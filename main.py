@@ -7,19 +7,22 @@ import time
 #! Initialization
 
 class Game:
-    currentTurn = 0
-    hornHealth = 750
-    hornEnergy = 500
-    enemySlots = ["","","","","",""]
-    usingRemainingEnergy = False
-    alreadyAttackedThisTurn = True
-    firstTurn = []
-    secondTurn = []
-    thirdTurn = []
-    fourthTurn = []
-    fifthTurn = []
-    sixthTurn = []
-    lastEnemySlotModified = 0
+
+    def __init__(self):
+
+        self.currentTurn = 0
+        self.hornHealth = 750
+        self.hornEnergy = 500
+        self.enemySlots = ["","","","","",""]
+        self.usingRemainingEnergy = False
+        self.alreadyAttackedThisTurn = True
+        self.firstTurn = []
+        self.secondTurn = []
+        self.thirdTurn = []
+        self.fourthTurn = []
+        self.fifthTurn = []
+        self.sixthTurn = []
+        self.lastEnemySlotModified = 0
 
 totalGames = 0
 gamesWon = 0

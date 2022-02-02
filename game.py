@@ -22,9 +22,7 @@ def enemyIsAttackingNextTurn(gameInfo, enemyArrayPosition):
 # * Checks if the game isn't over
 def gameIsStillOn(gameInfo):
 
-    print(gameInfo.currentTurn)
     gameInfo.currentTurn += 1
-    print(gameInfo.currentTurn)
 
     if gameInfo.currentTurn <= 6:
 
@@ -271,13 +269,14 @@ def attackEnemies(gameInfo):
                 attack.soundAttack(gameInfo, slotToAttack - 1)
                 gameInfo.alreadyAttackedThisTurn = True
 
-        if (
+        elif (
             (numberOfArtilleriesReady >= 1)
             and (gameInfo.hornEnergy > 0)
             and (gameInfo.usingRemainingEnergy)
         ):
 
             print("There are artilleries to attack. Attacking with remaining energy.")
+            print(gameInfo.enemySlots)
 
             # Horn can do up to 3 sound attacks per turn and still regain full energy.
             # The artilleries need to be prioritized, and always sound attacked attacked, regardless of energy.
@@ -287,12 +286,6 @@ def attackEnemies(gameInfo):
             ) - numberOfArtilleriesReady  # The number of non artilleries that can be sound attacked and still regain full energy
             numberOfNonArtilleriesAddedToArray = 0  # The number of non artilleries queued to be attacked the same turn as the artilleries
             slotsToSoundAttack = []
-
-            print("numberOfNonArtilleriesAddedToArray: ", numberOfNonArtilleriesAddedToArray)
-            print("numberOfNonArtilleriesReady: ", numberOfNonArtilleriesReady)
-            print(gameInfo.enemySlots)
-            #TODO: ESTAVA AQUI SEGURANCA DO CRLH
-            print()
 
             #! Add non artilleries to be attacked to the array
             i = 0
@@ -305,6 +298,9 @@ def attackEnemies(gameInfo):
                 numberOfNonArtilleriesAddedToArray < numberOfAttacksToNonArtilleries
             ) and (numberOfNonArtilleriesAddedToArray < numberOfNonArtilleriesReady):
 
+                print("numberOfNonArtilleriesAddedToArray: ", numberOfNonArtilleriesAddedToArray)
+                print("numberOfNonArtilleriesReady: ", numberOfNonArtilleriesReady)
+                print(i)
                 currentEnemy = gameInfo.enemySlots[i]
                 if enemyIsAttackingNextTurn(gameInfo, i) and (
                     currentEnemy["type"] != "Artillery"
@@ -378,7 +374,7 @@ def attackEnemies(gameInfo):
                 i += 1
 
         # Attack with remaining energy
-        if (
+        elif (
             (numberOfEnemies >= 2)
             and (gameInfo.hornEnergy > 0)
             and (gameInfo.usingRemainingEnergy)
@@ -603,11 +599,6 @@ def enemiesAttack(gameInfo):
 def playGame(gameInfo):
 
     while gameIsStillOn(gameInfo):
-
-        print("DEBUG: Enemy slots before adding turn")
-        print(gameInfo.enemySlots)
-        print("DEBUG: Turn slots")
-
 
         if gameInfo.currentTurn == 1:
             print(gameInfo.firstTurn)
